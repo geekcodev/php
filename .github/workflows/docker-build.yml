@@ -1,0 +1,66 @@
+name: Build PHP Docker Image
+
+on:
+  push:
+    branches:
+      - main
+      - '8.4'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine image tag from branch
+        id: tag
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          if [ "$BRANCH_NAME" = "main" ]; then
+            echo "IMAGE_TAG=latest" >> $GITHUB_OUTPUT
+            echo "PHP_VERSION=8.4" >> $GITHUB_OUTPUT
+          else
+            echo "IMAGE_TAG=$BRANCH_NAME" >> $GITHUB_OUTPUT
+            echo "PHP_VERSION=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.IMAGE_TAG }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.version=${{ steps.tag.outputs.IMAGE_TAG }}
+            org.opencontainers.image.description=PHP FPM Alpine with common extensions
+            org.opencontainers.image.licenses=MIT
+          cache-from: type=gha,scope=${{ steps.tag.outputs.IMAGE_TAG }}
+          cache-to: type=gha,mode=max,scope=${{ steps.tag.outputs.IMAGE_TAG }}
+          platforms: linux/amd64,linux/arm64
+
+      - name: Image details
+        run: |
+          echo "Successfully built and pushed:"
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.IMAGE_TAG }}"
+          echo "PHP Version: ${{ steps.tag.outputs.PHP_VERSION }}"
