@@ -1,7 +1,6 @@
 FROM php:8.4.12-fpm-bookworm
 
 RUN apt-get update && apt-get install -y \
-    linux-headers \
     make \
     automake \
     autoconf \
