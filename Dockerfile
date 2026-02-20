@@ -1,7 +1,7 @@
-FROM php:8.4.12-fpm-alpine3.22
+FROM php:8.4.12-fpm-bookworm
 
-RUN apk update && apk add --no-cache \
-    linux-headers \
+RUN apt-get update && apt-get install -y \
+    linux-headers-amd64 \
     make \
     automake \
     autoconf \
@@ -11,37 +11,27 @@ RUN apk update && apk add --no-cache \
     curl \
     wget \
     unzip \
-    shadow \
-    musl-utils \
-    openssl-dev \
-    mysql-client \
+    passwd \
+    openssl \
+    libssl-dev \
+    default-mysql-client \
     postgresql-client \
-    libmcrypt \
     libmcrypt-dev \
     gettext \
-    gettext-dev \
-    icu \
-    icu-dev \
-    icu-libs \
-    icu-data-full \
-    zlib \
-    zlib-dev \
+    libicu-dev \
+    zlib1g \
+    zlib1g-dev \
     libzip-dev \
     libxml2 \
     libxml2-dev \
-    libxslt \
-    libxslt-dev \
+    libxslt1-dev \
     libpq-dev \
-    libpng \
     libpng-dev \
-    libjpeg-turbo \
-    libjpeg-turbo-dev \
-    libwebp \
+    libjpeg-dev \
     libwebp-dev \
-    freetype-dev \
-    imagemagick-dev \
-    php84 \
-    php84-fpm \
+    libfreetype6-dev \
+    libmagickwand-dev \
+    libonig-dev \
     && pecl install mcrypt \
     && docker-php-ext-enable mcrypt \
     && pecl install redis \
@@ -51,9 +41,10 @@ RUN apk update && apk add --no-cache \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
     && docker-php-ext-install -j$(nproc) pgsql mysqli pdo_pgsql pdo_mysql bcmath exif intl gettext \
-    && docker-php-ext-install -j$(nproc) zip xsl soap sockets shmop sysvsem sysvmsg sysvshm \
+    && docker-php-ext-install -j$(nproc) zip xsl soap sockets shmop sysvsem sysvmsg sysvshm pcntl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) gd \
-    && rm -rf /var/cache/apk/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
