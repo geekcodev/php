@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - '8.4'
+      - '8.4-bookworm'
+      - '8.4-franken'
   workflow_dispatch:
 
 env:
