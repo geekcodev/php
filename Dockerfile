@@ -51,7 +51,7 @@ RUN apk update && apk add --no-cache \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
     && docker-php-ext-install -j$(nproc) pgsql mysqli pdo_pgsql pdo_mysql bcmath exif intl gettext \
-    && docker-php-ext-install -j$(nproc) zip xsl soap sockets shmop sysvsem sysvmsg sysvshm \
+    && docker-php-ext-install -j$(nproc) zip xsl soap sockets shmop sysvsem sysvmsg sysvshm pcntl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) gd \
     && rm -rf /var/cache/apk/*
