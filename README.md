@@ -6,6 +6,7 @@
 
 - `ghcr.io/geekcodev/php:latest` - Последняя версия PHP (на данный момент 8.4)
 - `ghcr.io/geekcodev/php:8.4` - PHP 8.4
+- `ghcr.io/geekcodev/php:8.4-bookworm` - PHP 8.4 Debian Bookworm
 
 ## 🚀 Использование
 
