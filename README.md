@@ -6,6 +6,7 @@
 
 - `ghcr.io/geekcodev/php:latest` - Последняя версия PHP (на данный момент 8.4)
 - `ghcr.io/geekcodev/php:8.4` - PHP 8.4
+- `ghcr.io/geekcodev/php:8.4-franken` - FrankenPHP 8.4
 
 ## 🚀 Использование
 
