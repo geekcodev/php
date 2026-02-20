@@ -1,28 +1,9 @@
-FROM php:8.4.12-fpm-bookworm
+FROM dunglas/frankenphp:1.11.2-php8.4-bookworm
 
 RUN apt-get update && apt-get install -y \
-    linux-headers-amd64 \
-    make \
-    automake \
-    autoconf \
-    g++ \
-    gcc \
-    git \
-    curl \
-    wget \
-    unzip \
-    passwd \
-    openssl \
-    libssl-dev \
-    default-mysql-client \
-    postgresql-client \
     libmcrypt-dev \
-    gettext \
     libicu-dev \
-    zlib1g \
-    zlib1g-dev \
     libzip-dev \
-    libxml2 \
     libxml2-dev \
     libxslt1-dev \
     libpq-dev \
@@ -32,18 +13,18 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libmagickwand-dev \
     libonig-dev \
-    && pecl install mcrypt \
-    && docker-php-ext-enable mcrypt \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && pecl install igbinary \
-    && docker-php-ext-enable igbinary \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
-    && docker-php-ext-install -j$(nproc) pgsql mysqli pdo_pgsql pdo_mysql bcmath exif intl gettext \
-    && docker-php-ext-install -j$(nproc) zip xsl soap sockets shmop sysvsem sysvmsg sysvshm pcntl \
+    default-mysql-client \
+    postgresql-client \
+    git \
+    unzip \
+    curl \
+    nodejs \
+    npm \
+    && pecl install redis igbinary imagick mcrypt \
+    && docker-php-ext-enable redis igbinary imagick mcrypt \
+    && docker-php-ext-install pcntl pgsql mysqli pdo_pgsql pdo_mysql bcmath exif intl gettext zip xsl soap sockets shmop sysvsem sysvmsg sysvshm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install gd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
